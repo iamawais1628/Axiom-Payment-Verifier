@@ -15,13 +15,23 @@ export default function Login() {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password })
     if (error) { setError(error.message); setLoading(false); return }
 
-    // Redirect based on role
-    const { data: profile } = await supabase.from('profiles').select('role').eq('id', data.user.id).maybeSingle()
-    const role = profile?.role || 'agent'
+  // Redirect based on role
+const { data: profile, error: profileError } = await supabase
+  .from('profiles')
+  .select('role')
+  .eq('id', data.user.id)
+  .maybeSingle()
 
-    if (role === 'finance') router.push('/finance')
-    else if (role === 'admin') router.push('/dashboard')
-    else router.push('/upload')
+console.log('USER ID:', data.user.id)
+console.log('PROFILE DATA:', profile)
+console.log('PROFILE ERROR:', profileError)
+
+const role = profile?.role || 'agent'
+console.log('FINAL ROLE:', role)
+
+if (role === 'finance') router.push('/finance')
+else if (role === 'admin') router.push('/dashboard')
+else router.push('/upload')
   }
 
   return (
