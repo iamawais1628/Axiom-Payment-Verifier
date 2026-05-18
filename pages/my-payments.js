@@ -9,6 +9,7 @@ export default function MyPayments() {
   const [notifications, setNotifications] = useState([])
   const [showNotif, setShowNotif] = useState(false)
   const [filter, setFilter] = useState('all')
+  const [search, setSearch] = useState('')
   const router = useRouter()
 
   useEffect(() => { init() }, [])
@@ -48,9 +49,11 @@ export default function MyPayments() {
     setShowNotif(false)
   }
 
-  const filtered = payments.filter(p =>
-    filter === 'all' ? true : (p.approval_status || 'pending_review') === filter
-  )
+  const filtered = payments.filter(p => {
+    const matchFilter = filter === 'all' ? true : (p.approval_status || 'pending_review') === filter
+    const matchSearch = !search || JSON.stringify(p).toLowerCase().includes(search.toLowerCase())
+    return matchFilter && matchSearch
+  })
 
   const counts = {
     all: payments.length,
@@ -119,6 +122,13 @@ export default function MyPayments() {
         .reject-reason-text { font-size: 13px; color: #333; }
         .ss-link { display: inline-flex; align-items: center; gap: 5px; color: #2563eb; font-size: 13px; text-decoration: none; margin-top: 14px; font-weight: 500; }
         .btn-close { width: 100%; margin-top: 16px; background: #f5f7ff; border: 1.5px solid #e8ecf8; border-radius: 10px; padding: 12px; color: #888; font-size: 13px; font-family: 'Inter',sans-serif; cursor: pointer; }
+        .search-input { width: 100%; background: #fff; border: 1.5px solid #e8ecf8; border-radius: 10px; padding: 10px 14px; color: #111; font-size: 13px; font-family: 'Inter',sans-serif; outline: none; transition: border-color 0.2s; margin-bottom: 12px; }
+        .search-input:focus { border-color: #3b6be8; }
+        .reupload-btn { width: 100%; background: #2563eb; border: none; border-radius: 10px; padding: 12px; color: #fff; font-size: 14px; font-weight: 600; font-family: 'Inter',sans-serif; cursor: pointer; margin-top: 10px; }
+        .reupload-btn:hover { background: #1d4ed8; }
+        .note-box { background: #f0f4ff; border: 1.5px solid #c7d7f9; border-radius: 10px; padding: 12px 14px; margin-top: 12px; }
+        .note-label { font-size: 11px; font-weight: 700; color: #2563eb; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+        .note-text { font-size: 13px; color: #333; }
       `}</style>
 
       <nav className="nav">
@@ -163,6 +173,7 @@ export default function MyPayments() {
         <div className="page-title">My Payments</div>
         <div className="page-sub">Track all your submitted payments and their approval status in real-time</div>
 
+        <input className="search-input" placeholder="🔍  Search by amount, sender, method..." value={search} onChange={e => setSearch(e.target.value)} />
         <div className="filter-tabs">
           {[
             { key: 'all',            label: `All (${counts.all})` },
@@ -254,6 +265,21 @@ export default function MyPayments() {
                 <a href={selected.screenshot_url} target="_blank" rel="noopener noreferrer" className="ss-link">
                   🖼️ View Screenshot ↗
                 </a>
+              )}
+
+              {/* Show agent note if exists */}
+              {selected.agent_note && (
+                <div className="note-box">
+                  <div className="note-label">Your Note</div>
+                  <div className="note-text">{selected.agent_note}</div>
+                </div>
+              )}
+
+              {/* Re-upload button for rejected payments */}
+              {(selected.approval_status === 'rejected') && (
+                <button className="reupload-btn" onClick={() => { setSelected(null); router.push('/upload') }}>
+                  ↑ Re-upload Corrected Screenshot
+                </button>
               )}
 
               <button className="btn-close" onClick={() => setSelected(null)}>Close</button>
