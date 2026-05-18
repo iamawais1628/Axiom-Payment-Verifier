@@ -38,6 +38,8 @@ export default function Finance() {
       .subscribe()
   }
 
+  const logout = async () => { await supabase.auth.signOut(); router.push('/login') }
+
   const loadPayments = async (prof) => {
     let query = supabase.from('payments').select('*').order('created_at', { ascending: false })
     // Finance only sees their assigned methods
@@ -81,6 +83,21 @@ export default function Finance() {
         ? `Your ${selected.payment_method} payment of ${selected.amount} from ${selected.sender_name} has been approved.`
         : `Your ${selected.payment_method} payment of ${selected.amount} was rejected. Reason: ${rejectReason || 'No reason provided'}`,
       related_id: selected.id,
+    })
+
+    // Send email notification via API
+    await fetch('/api/notify-email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        to: selected.agent_email || selected.uploaded_by,
+        decision,
+        amount: selected.amount,
+        method: selected.payment_method,
+        sender: selected.sender_name,
+        reason: rejectReason,
+        reviewedBy: profile.email,
+      })
     })
 
     setActing(false)
@@ -142,7 +159,9 @@ export default function Finance() {
         .badge { display: inline-block; padding: 3px 11px; border-radius: 20px; font-size: 11px; font-weight: 600; }
         .empty { text-align: center; padding: 60px; color: #ccc; font-size: 14px; }
         .overlay { position: fixed; inset: 0; background: rgba(10,15,40,0.55); z-index: 100; display: flex; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(2px); }
-        .modal { background: #fff; border-radius: 20px; padding: 32px; width: 100%; max-width: 500px; box-shadow: 0 20px 60px rgba(0,0,0,0.18); max-height: 90vh; overflow-y: auto; }
+        .modal { background: #fff; border-radius: 20px; padding: 32px; width: 100%; max-width: 680px; box-shadow: 0 20px 60px rgba(0,0,0,0.18); max-height: 90vh; overflow-y: auto; }
+        .ss-img { width: 100%; max-height: 320px; object-fit: contain; border-radius: 10px; border: 1.5px solid #e8ecf8; margin-top: 14px; cursor: pointer; }
+        .ss-img:hover { border-color: #3b6be8; }
         .modal-title { font-size: 18px; font-weight: 700; color: #111; margin-bottom: 20px; }
         .detail-row { display: flex; justify-content: space-between; gap: 12px; padding: 9px 0; border-bottom: 1px solid #f0f0f0; }
         .detail-row:last-of-type { border-bottom: none; }
@@ -171,6 +190,7 @@ export default function Finance() {
         <div className="nav-right">
           <span style={{color:'#4a6090',fontSize:'11px',padding:'3px 8px',background:'#2a3f70',borderRadius:'20px'}}>💼 Finance</span>
           <button className="nav-link" onClick={() => router.push('/tags')}>🏷️ Tags</button>
+          <button className="nav-link" style={{color:'#f87171'}} onClick={logout}>Logout</button>
           <div style={{ position: 'relative' }}>
             <button className="notif-btn" onClick={() => setShowNotif(!showNotif)}>
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8fa8d8" strokeWidth="2">
@@ -290,9 +310,19 @@ export default function Finance() {
             ))}
 
             {selected.screenshot_url && (
-              <a href={selected.screenshot_url} target="_blank" rel="noopener noreferrer" className="ss-link">
-                🖼️ View Screenshot ↗
-              </a>
+              <div style={{ marginTop: '14px' }}>
+                <div style={{ fontSize: '11px', color: '#aaa', textTransform: 'uppercase', letterSpacing: '0.6px', fontWeight: 600, marginBottom: '8px' }}>Payment Screenshot</div>
+                <img
+                  src={selected.screenshot_url}
+                  alt="Payment screenshot"
+                  className="ss-img"
+                  onClick={() => window.open(selected.screenshot_url, '_blank')}
+                  title="Click to open full size"
+                />
+                <a href={selected.screenshot_url} target="_blank" rel="noopener noreferrer" className="ss-link">
+                  ↗ Open full size
+                </a>
+              </div>
             )}
 
             {(selected.approval_status || 'pending_review') === 'pending_review' ? (
