@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
-import { supabase } from '../lib/supabase'
+import { supabase } from '../../lib/supabase'
 
 const METHODS = ['CashApp', 'Chime', 'Zelle', 'TapTap', 'Venmo', 'PayPal']
 const ROLES = ['agent', 'finance', 'admin']
