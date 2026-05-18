@@ -34,6 +34,8 @@ export default function MyPayments() {
     if (data) setPayments(data)
   }
 
+  const logout = async () => { await supabase.auth.signOut(); router.push('/login') }
+
   const loadNotifications = async (email) => {
     const { data } = await supabase.from('notifications').select('*')
       .eq('recipient_email', email).eq('is_read', false).order('created_at', { ascending: false })
@@ -125,6 +127,7 @@ export default function MyPayments() {
           <span style={{color:'#4a6090',fontSize:'11px',padding:'3px 8px',background:'#2a3f70',borderRadius:'20px'}}>👤 Agent</span>
           <button className="nav-link" onClick={() => router.push('/tags')}>🏷️ Tags</button>
           <button className="nav-btn" onClick={() => router.push('/upload')}>+ New Upload</button>
+          <button className="nav-link" style={{color:'#f87171'}} onClick={logout}>Logout</button>
           <div style={{ position: 'relative' }}>
             <button className="notif-btn" onClick={() => setShowNotif(!showNotif)}>
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8fa8d8" strokeWidth="2">
