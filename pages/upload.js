@@ -36,6 +36,7 @@ export default function Upload() {
   const [step, setStep] = useState(0)
   const [result, setResult] = useState(null)
   const [dragOver, setDragOver] = useState(false)
+  const [note, setNote] = useState('')
   const fileRef = useRef(null)
   const router = useRouter()
 
@@ -73,7 +74,7 @@ export default function Upload() {
     e.preventDefault(); if (!file) return
     setLoading(true); setResult(null)
     const fd = new FormData()
-    fd.append('file', file); fd.append('paymentMethod', method); fd.append('uploaderName', uploaderName)
+    fd.append('file', file); fd.append('paymentMethod', method); fd.append('uploaderName', uploaderName); fd.append('note', note)
     try {
       const r = await fetch('/api/verify', { method:'POST', body:fd })
       setResult(await r.json())
@@ -82,7 +83,7 @@ export default function Upload() {
   }
 
   const logout = async () => { await supabase.auth.signOut(); router.push('/login') }
-  const reset = () => { setFile(null); setPreview(null); setResult(null) }
+  const reset = (presetMethod) => { setFile(null); setPreview(null); setResult(null); setNote(''); if(presetMethod) setMethod(presetMethod) }
 
   const statusMeta = {
     verified:   { icon:'✅', label:'VERIFIED',          accent:'#16a34a', lightBg:'#f0fdf4', border:'#bbf7d0', badgeBg:'#dcfce7', badgeText:'#15803d' },
@@ -152,6 +153,13 @@ export default function Upload() {
         .reset-btn { width:100%; background:#f5f7ff; border:1.5px solid #e8ecf8; border-radius:11px; padding:13px; color:#555; font-size:14px; font-weight:600; font-family:'Inter',sans-serif; cursor:pointer; transition:all 0.2s; margin-top:20px; }
         .reset-btn:hover { background:#eef2ff; border-color:#a5b4fc; color:#2563eb; }
         .sim-note { font-size:12px; color:#aaa; margin-top:6px; }
+        .note-textarea { width:100%; background:#f8f9ff; border:1.5px solid #e8ecf8; border-radius:10px; padding:12px 15px; color:#111; font-size:13px; font-family:'Inter',sans-serif; outline:none; transition:border-color 0.2s; margin-bottom:20px; resize:none; }
+        .note-textarea:focus { border-color:#3b6be8; background:#fff; }
+        .reupload-btn { width:100%; background:#2563eb; border:none; border-radius:11px; padding:14px; color:#fff; font-size:15px; font-weight:600; font-family:'Inter',sans-serif; cursor:pointer; transition:all 0.2s; margin-top:10px; }
+        .reupload-btn:hover { background:#1d4ed8; transform:translateY(-1px); }
+        .reject-banner { background:#fff5f5; border:1.5px solid #fecaca; border-radius:12px; padding:16px 18px; margin-bottom:16px; }
+        .reject-banner-label { font-size:11px; font-weight:700; color:#dc2626; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px; }
+        .reject-banner-text { font-size:14px; color:#333; }
       `}</style>
 
       <nav className="nav">
@@ -202,6 +210,8 @@ export default function Upload() {
 
               <label className="field-label">Uploaded By</label>
               <input type="text" className="txt-input" value={uploaderName} onChange={e=>setUploaderName(e.target.value)} required/>
+              <label className="field-label">Note for Finance <span style={{color:'#bbb',fontWeight:400}}>(optional)</span></label>
+              <textarea className="note-textarea" rows={2} value={note} onChange={e=>setNote(e.target.value)} placeholder="e.g. This is for order #445, client John Smith..."/>
               <button type="submit" className="submit-btn" disabled={!file||loading}>Verify Payment →</button>
             </form>
           </div>
@@ -252,7 +262,20 @@ export default function Upload() {
                   </div>
                 </>
               )}
-              <button className="reset-btn" onClick={reset}>+ Verify Another Payment</button>
+              {result.status === 'duplicate' || result.status === 'suspicious' ? (
+                <>
+                  {result.original?.rejection_reason && (
+                    <div className="reject-banner">
+                      <div className="reject-banner-label">Rejection Reason</div>
+                      <div className="reject-banner-text">{result.original.rejection_reason}</div>
+                    </div>
+                  )}
+                  <button className="reupload-btn" onClick={() => reset(result.details?.payment_app)}>↑ Re-upload Corrected Screenshot</button>
+                  <button className="reset-btn" onClick={reset} style={{marginTop:'8px'}}>+ Upload Different Payment</button>
+                </>
+              ) : (
+                <button className="reset-btn" onClick={reset}>+ Verify Another Payment</button>
+              )}
             </div>
           </div>
         )}
