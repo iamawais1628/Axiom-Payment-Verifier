@@ -13,6 +13,8 @@ export default function Dashboard() {
 
   useEffect(() => { checkUserAndLoad() }, [])
 
+  const logout = async () => { await supabase.auth.signOut(); router.push('/login') }
+
   const checkUserAndLoad = async () => {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) { router.push('/login'); return }
@@ -144,8 +146,10 @@ export default function Dashboard() {
       <nav className="nav">
         <div className="nav-logo">🛡️ Payment Verifier</div>
           <span style={{color:'#4a6090',fontSize:'11px',padding:'3px 8px',background:'#2a3f70',borderRadius:'20px'}}>⚙️ Admin</span>
-          <button className="nav-btn" onClick={() => router.push('/finance')}>Finance Queue</button>
-          <button className="nav-btn" onClick={() => router.push('/tags')}>Tags</button>
+          <button className="nav-link" onClick={() => router.push('/admin/users')}>👥 Users</button>
+          <button className="nav-link" onClick={() => router.push('/finance')}>Finance Queue</button>
+          <button className="nav-link" onClick={() => router.push('/tags')}>Tags</button>
+          <button className="nav-link" style={{color:'#f87171'}} onClick={logout}>Logout</button>
       </nav>
 
       <div className="page">
