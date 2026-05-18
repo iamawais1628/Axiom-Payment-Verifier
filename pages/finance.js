@@ -183,6 +183,13 @@ export default function Finance() {
         .toast { position: fixed; bottom: 24px; right: 24px; background: #111; color: #fff; padding: 12px 20px; border-radius: 12px; font-size: 13px; font-weight: 500; z-index: 999; box-shadow: 0 4px 20px rgba(0,0,0,0.3); animation: slidein 0.3s ease; }
         @keyframes slidein { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .already-reviewed { background: #f8f9ff; border: 1.5px solid #e8ecf8; border-radius: 10px; padding: 14px; margin-top: 20px; text-align: center; color: #888; font-size: 13px; }
+        .stats-bar { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+        .stat-pill { background: #fff; border: 1.5px solid #eef1fb; border-radius: 12px; padding: 14px 20px; flex: 1; min-width: 120px; box-shadow: 0 1px 6px rgba(0,0,0,0.05); }
+        .stat-pill-num { font-size: 26px; font-weight: 700; line-height: 1; }
+        .stat-pill-label { font-size: 11px; color: #aaa; text-transform: uppercase; letter-spacing: 0.7px; margin-top: 5px; font-weight: 500; }
+        .note-box { background: #f0f4ff; border: 1.5px solid #c7d7f9; border-radius: 10px; padding: 12px 14px; margin-top: 12px; }
+        .note-label { font-size: 11px; font-weight: 700; color: #2563eb; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+        .note-text { font-size: 13px; color: #333; }
       `}</style>
 
       <nav className="nav">
@@ -223,6 +230,26 @@ export default function Finance() {
 
       <div className="page">
         <div className="page-title">Finance Review Queue</div>
+
+        {/* Stats bar */}
+        <div className="stats-bar">
+          <div className="stat-pill">
+            <div className="stat-pill-num" style={{color:'#d97706'}}>{counts.pending_review}</div>
+            <div className="stat-pill-label">⏳ Pending</div>
+          </div>
+          <div className="stat-pill">
+            <div className="stat-pill-num" style={{color:'#16a34a'}}>{counts.approved}</div>
+            <div className="stat-pill-label">✅ Approved</div>
+          </div>
+          <div className="stat-pill">
+            <div className="stat-pill-num" style={{color:'#dc2626'}}>{counts.rejected}</div>
+            <div className="stat-pill-label">❌ Rejected</div>
+          </div>
+          <div className="stat-pill">
+            <div className="stat-pill-num" style={{color:'#2563eb'}}>{payments.length}</div>
+            <div className="stat-pill-label">📋 Total</div>
+          </div>
+        </div>
 
         {/* Filter tabs */}
         <div className="filter-tabs">
@@ -308,6 +335,14 @@ export default function Finance() {
                 <div className="d-value">{v}</div>
               </div>
             ))}
+
+            {/* Agent note */}
+            {selected.agent_note && (
+              <div className="note-box">
+                <div className="note-label">Agent Note</div>
+                <div className="note-text">{selected.agent_note}</div>
+              </div>
+            )}
 
             {selected.screenshot_url && (
               <div style={{ marginTop: '14px' }}>
