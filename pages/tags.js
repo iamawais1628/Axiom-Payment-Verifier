@@ -27,6 +27,8 @@ export default function Tags() {
 
   useEffect(() => { init() }, [])
 
+  const logout = async () => { await supabase.auth.signOut(); router.push('/login') }
+
   const showToast = (msg, type = 'success') => {
     setToast({ msg, type })
     setTimeout(() => setToast(null), 3000)
@@ -277,6 +279,7 @@ export default function Tags() {
           {profile?.role === 'agent' && <button className="nav-link" onClick={() => router.push('/my-payments')}>My Payments</button>}
           {(profile?.role === 'finance' || profile?.role === 'admin') && <button className="nav-link" onClick={() => router.push('/finance')}>Review Queue</button>}
           {profile?.role === 'admin' && <button className="nav-link" onClick={() => router.push('/dashboard')}>Dashboard</button>}
+          <button className="nav-link" style={{color:'#f87171'}} onClick={logout}>Logout</button>
 
           {/* Notification Bell */}
           <div style={{ position: 'relative' }}>
