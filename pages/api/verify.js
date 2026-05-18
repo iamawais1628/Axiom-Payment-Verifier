@@ -133,6 +133,7 @@ export default async function handler(req, res) {
     const file = Array.isArray(files.file)?files.file[0]:files.file
     const paymentMethod = Array.isArray(fields.paymentMethod)?fields.paymentMethod[0]:fields.paymentMethod
     const uploaderName  = Array.isArray(fields.uploaderName)?fields.uploaderName[0]:fields.uploaderName
+    const agentNote     = Array.isArray(fields.note)?fields.note[0]:fields.note
 
     const buf       = fs.readFileSync(file.filepath)
     const b64       = buf.toString('base64')
@@ -238,6 +239,7 @@ export default async function handler(req, res) {
       agent_email: uploaderName,
       status: 'verified',
       approval_status: 'pending_review',
+      agent_note: agentNote || null,
     }]).select().single()
 
     if (insErr) return res.status(500).json({ status:'error', message:`Failed to save payment: ${insErr.message}` })
