@@ -121,6 +121,15 @@ export default function MyPayments() {
         .reject-reason-label { font-size: 11px; font-weight: 700; color: #dc2626; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
         .reject-reason-text { font-size: 13px; color: #333; }
         .ss-link { display: inline-flex; align-items: center; gap: 5px; color: #2563eb; font-size: 13px; text-decoration: none; margin-top: 14px; font-weight: 500; }
+        @media(max-width:640px){
+          .nav { padding:0 14px; }
+          .nav-logo { font-size:15px; }
+          .page { padding:16px 12px; }
+          .pay-card { flex-direction:column; }
+          .pay-amount { font-size:18px; }
+          .status-big { font-size:12px; padding:6px 10px; }
+          .modal { padding:20px 16px; }
+        }
         .btn-close { width: 100%; margin-top: 16px; background: #f5f7ff; border: 1.5px solid #e8ecf8; border-radius: 10px; padding: 12px; color: #888; font-size: 13px; font-family: 'Inter',sans-serif; cursor: pointer; }
         .search-input { width: 100%; background: #fff; border: 1.5px solid #e8ecf8; border-radius: 10px; padding: 10px 14px; color: #111; font-size: 13px; font-family: 'Inter',sans-serif; outline: none; transition: border-color 0.2s; margin-bottom: 12px; }
         .search-input:focus { border-color: #3b6be8; }
