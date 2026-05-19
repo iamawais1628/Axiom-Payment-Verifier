@@ -12,6 +12,8 @@ export default function Finance() {
   const [notifications, setNotifications] = useState([])
   const [showNotif, setShowNotif] = useState(false)
   const [toast, setToast] = useState(null)
+  const [selected_ids, setSelectedIds] = useState([])
+  const [bulkActing, setBulkActing] = useState(false)
   const router = useRouter()
 
   useEffect(() => { init() }, [])
@@ -100,10 +102,59 @@ export default function Finance() {
       })
     })
 
+    // Slack notification
+    fetch('/api/slack-notify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        type: decision === 'approved' ? 'payment_approved' : 'payment_rejected',
+        data: {
+          method: selected.payment_method,
+          amount: selected.amount,
+          agent: selected.uploaded_by,
+          reviewer: profile.email,
+          reason: rejectReason,
+        }
+      })
+    }).catch(() => {})
+
     setActing(false)
     setSelected(null)
     setRejectReason('')
     showToast(`Payment ${decision} successfully`)
+  }
+
+  const toggleSelect = (id) => {
+    setSelectedIds(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id])
+  }
+
+  const selectAllPending = () => {
+    const pendingIds = filtered.filter(p => (p.approval_status || 'pending_review') === 'pending_review').map(p => p.id)
+    setSelectedIds(prev => prev.length === pendingIds.length ? [] : pendingIds)
+  }
+
+  const bulkApprove = async () => {
+    if (selected_ids.length === 0) return
+    setBulkActing(true)
+    for (const id of selected_ids) {
+      const p = payments.find(x => x.id === id)
+      if (!p) continue
+      await supabase.from('payments').update({
+        approval_status: 'approved',
+        reviewed_by: profile.email,
+        reviewed_at: new Date().toISOString(),
+      }).eq('id', id)
+      await supabase.from('notifications').insert({
+        recipient_email: p.agent_email || p.uploaded_by,
+        type: 'payment_approved',
+        title: 'Payment Approved ✅',
+        message: `Your ${p.payment_method} payment of ${p.amount} has been approved.`,
+        related_id: p.id,
+      })
+    }
+    setSelectedIds([])
+    setBulkActing(false)
+    showToast(`${selected_ids.length} payments approved`)
   }
 
   const filtered = payments.filter(p =>
@@ -182,6 +233,13 @@ export default function Finance() {
         .btn-close { width: 100%; margin-top: 10px; background: #f5f7ff; border: 1.5px solid #e8ecf8; border-radius: 10px; padding: 11px; color: #888; font-size: 13px; font-family: 'Inter',sans-serif; cursor: pointer; }
         .toast { position: fixed; bottom: 24px; right: 24px; background: #111; color: #fff; padding: 12px 20px; border-radius: 12px; font-size: 13px; font-weight: 500; z-index: 999; box-shadow: 0 4px 20px rgba(0,0,0,0.3); animation: slidein 0.3s ease; }
         @keyframes slidein { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .bulk-bar { background: #1e2d5a; border-radius: 12px; padding: 12px 18px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; gap: 12px; flex-wrap: wrap; }
+        .bulk-bar-text { color: #8fa8d8; font-size: 13px; }
+        .bulk-approve-btn { background: #16a34a; border: none; border-radius: 8px; color: #fff; font-size: 13px; font-weight: 600; padding: 8px 20px; cursor: pointer; font-family: 'Inter',sans-serif; transition: background 0.2s; }
+        .bulk-approve-btn:hover:not(:disabled) { background: #15803d; }
+        .bulk-approve-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .bulk-clear-btn { background: none; border: 1px solid #2a3f70; border-radius: 8px; color: #8fa8d8; font-size: 12px; padding: 6px 14px; cursor: pointer; font-family: 'Inter',sans-serif; }
+        .row-checkbox { width: 16px; height: 16px; cursor: pointer; accent-color: #2563eb; }
         .already-reviewed { background: #f8f9ff; border: 1.5px solid #e8ecf8; border-radius: 10px; padding: 14px; margin-top: 20px; text-align: center; color: #888; font-size: 13px; }
         .stats-bar { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
         .stat-pill { background: #fff; border: 1.5px solid #eef1fb; border-radius: 12px; padding: 14px 20px; flex: 1; min-width: 120px; box-shadow: 0 1px 6px rgba(0,0,0,0.05); }
@@ -251,6 +309,19 @@ export default function Finance() {
           </div>
         </div>
 
+        {/* Bulk approve bar */}
+        {selected_ids.length > 0 && (
+          <div className="bulk-bar">
+            <span className="bulk-bar-text">✓ {selected_ids.length} payment{selected_ids.length > 1 ? 's' : ''} selected</span>
+            <div style={{display:'flex',gap:'8px'}}>
+              <button className="bulk-clear-btn" onClick={() => setSelectedIds([])}>Clear</button>
+              <button className="bulk-approve-btn" disabled={bulkActing} onClick={bulkApprove}>
+                {bulkActing ? 'Approving...' : `✅ Approve All (${selected_ids.length})`}
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Filter tabs */}
         <div className="filter-tabs">
           {[
@@ -273,6 +344,12 @@ export default function Finance() {
             <table className="tbl">
               <thead>
                 <tr>
+                  <th style={{width:'40px'}}>
+                    <input type="checkbox" className="row-checkbox"
+                      onChange={selectAllPending}
+                      checked={selected_ids.length > 0 && selected_ids.length === filtered.filter(p=>(p.approval_status||'pending_review')==='pending_review').length}
+                    />
+                  </th>
                   <th>Date</th>
                   <th>Amount</th>
                   <th>Sender</th>
@@ -287,9 +364,17 @@ export default function Finance() {
                   const approvalStatus = p.approval_status || 'pending_review'
                   const ss = statusStyle[approvalStatus] || statusStyle.pending_review
                   return (
-                    <tr key={p.id} onClick={() => { setSelected(p); setRejectReason('') }}>
-                      <td style={{ color: '#aaa', fontSize: '12px', whiteSpace: 'nowrap' }}>{new Date(p.created_at).toLocaleDateString()}</td>
-                      <td style={{ fontWeight: '700', color: '#111' }}>{p.amount}</td>
+                    <tr key={p.id}>
+                      <td onClick={e => e.stopPropagation()}>
+                        {(p.approval_status || 'pending_review') === 'pending_review' && (
+                          <input type="checkbox" className="row-checkbox"
+                            checked={selected_ids.includes(p.id)}
+                            onChange={() => toggleSelect(p.id)}
+                          />
+                        )}
+                      </td>
+                      <td style={{ color: '#aaa', fontSize: '12px', whiteSpace: 'nowrap' }} onClick={() => { setSelected(p); setRejectReason('') }}>{new Date(p.created_at).toLocaleDateString()}</td>
+                      <td style={{ fontWeight: '700', color: '#111' }} onClick={() => { setSelected(p); setRejectReason('') }}>{p.amount}</td>
                       <td>{p.sender_name}</td>
                       <td style={{ color: '#888' }}>{p.payment_method}</td>
                       <td style={{ color: '#aaa', fontSize: '12px' }}>{p.uploaded_by}</td>
