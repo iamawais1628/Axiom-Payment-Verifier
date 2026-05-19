@@ -153,6 +153,19 @@ export default function Upload() {
         .reset-btn { width:100%; background:#f5f7ff; border:1.5px solid #e8ecf8; border-radius:11px; padding:13px; color:#555; font-size:14px; font-weight:600; font-family:'Inter',sans-serif; cursor:pointer; transition:all 0.2s; margin-top:20px; }
         .reset-btn:hover { background:#eef2ff; border-color:#a5b4fc; color:#2563eb; }
         .sim-note { font-size:12px; color:#aaa; margin-top:6px; }
+        @media(max-width:640px){
+          .nav { padding:0 16px; }
+          .nav-logo { font-size:15px; }
+          .nav-link { padding:4px 8px; font-size:12px; }
+          .page { padding:16px 12px; }
+          .card { padding:20px 16px; }
+          .card-title { font-size:17px; }
+          .drop-zone { padding:24px 14px; }
+          .submit-btn { padding:13px; font-size:14px; }
+          .result-header { padding:20px 18px 16px; }
+          .result-title { font-size:18px; }
+          .result-body { padding:16px 18px 20px; }
+        }
         .note-textarea { width:100%; background:#f8f9ff; border:1.5px solid #e8ecf8; border-radius:10px; padding:12px 15px; color:#111; font-size:13px; font-family:'Inter',sans-serif; outline:none; transition:border-color 0.2s; margin-bottom:20px; resize:none; }
         .note-textarea:focus { border-color:#3b6be8; background:#fff; }
         .reupload-btn { width:100%; background:#2563eb; border:none; border-radius:11px; padding:14px; color:#fff; font-size:15px; font-weight:600; font-family:'Inter',sans-serif; cursor:pointer; transition:all 0.2s; margin-top:10px; }
