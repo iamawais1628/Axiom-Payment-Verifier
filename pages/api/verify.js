@@ -144,7 +144,13 @@ export default async function handler(req, res) {
 
     // STEP 1 — Exact duplicate
     const { data: existing } = await supabase.from('payments').select('*').eq('image_hash',imageHash).maybeSingle()
-    if (existing) return res.json({ status:'duplicate', details:existing, original:existing, reason:'exact_image', message:'❌ Exact same screenshot already uploaded!' })
+    if (existing) {
+      fetch('/api/slack-notify', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type: 'duplicate_detected', data: { method: paymentMethod, amount: 'unknown', agent: uploaderName, reason: 'Exact same screenshot' } })
+      }).catch(() => {})
+      return res.json({ status:'duplicate', details:existing, original:existing, reason:'exact_image', message:'❌ Exact same screenshot already uploaded!' })
+    }
 
     // STEP 2 — AI extraction
     const completion = await groq.chat.completions.create({
@@ -246,6 +252,16 @@ export default async function handler(req, res) {
 
     // STEP 10 — Notify finance team
     await notifyFinance(paymentMethod, uploaderName, inserted.id)
+
+    // STEP 11 — Slack notification
+    fetch('/api/slack-notify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        type: 'payment_submitted',
+        data: { method: paymentMethod, amount: extracted.amount, sender: extracted.sender_name, agent: uploaderName, note: agentNote }
+      })
+    }).catch(() => {})
 
     return res.json({ status:'verified', details:extracted, message:'✅ Payment verified and sent to finance for approval!' })
 
