@@ -147,6 +147,7 @@ export default function Dashboard() {
         <div className="nav-logo">🛡️ Payment Verifier</div>
           <span style={{color:'#4a6090',fontSize:'11px',padding:'3px 8px',background:'#2a3f70',borderRadius:'20px'}}>⚙️ Admin</span>
           <button className="nav-link" onClick={() => router.push('/admin/users')}>👥 Users</button>
+          <button className="nav-link" onClick={() => router.push('/admin/activity')}>📋 Activity</button>
           <button className="nav-link" onClick={() => router.push('/finance')}>Finance Queue</button>
           <button className="nav-link" onClick={() => router.push('/tags')}>Tags</button>
           <button className="nav-link" style={{color:'#f87171'}} onClick={logout}>Logout</button>
@@ -176,6 +177,52 @@ export default function Dashboard() {
           <div className="stat-card">
             <div className="stat-num" style={{ color: '#2563eb' }}>{stats.flagRate}%</div>
             <div className="stat-lbl">Flag Rate</div>
+          </div>
+        </div>
+
+        {/* Charts */}
+        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'16px',marginBottom:'24px'}}>
+          {/* Payments by method bar chart */}
+          <div style={{background:'#fff',borderRadius:'16px',padding:'20px',boxShadow:'0 1px 8px rgba(0,0,0,0.06)',border:'1.5px solid #eef1fb'}}>
+            <div style={{fontSize:'13px',fontWeight:'700',color:'#111',marginBottom:'16px'}}>Payments by Method</div>
+            {['CashApp','Chime','Zelle','TapTap','Venmo','PayPal','Other'].map(m => {
+              const count = payments.filter(p => p.payment_method === m).length
+              const pct = payments.length > 0 ? (count / payments.length) * 100 : 0
+              const colors = {CashApp:'#00D64F',Chime:'#1EC677',Zelle:'#6D1ED4',TapTap:'#FF4E00',Venmo:'#3D95CE',PayPal:'#003087',Other:'#64748B'}
+              if (count === 0) return null
+              return (
+                <div key={m} style={{marginBottom:'10px'}}>
+                  <div style={{display:'flex',justifyContent:'space-between',fontSize:'12px',marginBottom:'4px'}}>
+                    <span style={{color:'#555',fontWeight:500}}>{m}</span>
+                    <span style={{color:'#111',fontWeight:700}}>{count}</span>
+                  </div>
+                  <div style={{background:'#f0f2fc',borderRadius:'4px',height:'8px',overflow:'hidden'}}>
+                    <div style={{background:colors[m]||'#2563eb',height:'100%',width:`${pct}%`,borderRadius:'4px',transition:'width 0.5s'}}/>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+
+          {/* Status breakdown donut-style */}
+          <div style={{background:'#fff',borderRadius:'16px',padding:'20px',boxShadow:'0 1px 8px rgba(0,0,0,0.06)',border:'1.5px solid #eef1fb'}}>
+            <div style={{fontSize:'13px',fontWeight:'700',color:'#111',marginBottom:'16px'}}>AI Detection Results</div>
+            {[
+              {label:'Verified',count:stats.verified,color:'#16a34a',bg:'#f0fdf4'},
+              {label:'Suspicious',count:stats.suspicious,color:'#d97706',bg:'#fffbeb'},
+              {label:'Duplicate',count:stats.duplicate,color:'#dc2626',bg:'#fff5f5'},
+            ].map(item => {
+              const pct = payments.length > 0 ? Math.round((item.count/payments.length)*100) : 0
+              return (
+                <div key={item.label} style={{display:'flex',alignItems:'center',gap:'12px',padding:'10px',background:item.bg,borderRadius:'10px',marginBottom:'8px'}}>
+                  <div style={{width:'40px',height:'40px',borderRadius:'50%',background:item.color,display:'flex',alignItems:'center',justifyContent:'center',color:'#fff',fontSize:'16px',fontWeight:'700',flexShrink:0}}>{pct}%</div>
+                  <div>
+                    <div style={{fontSize:'14px',fontWeight:'700',color:item.color}}>{item.count} {item.label}</div>
+                    <div style={{fontSize:'11px',color:'#aaa'}}>{pct}% of all payments</div>
+                  </div>
+                </div>
+              )
+            })}
           </div>
         </div>
 
