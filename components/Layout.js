@@ -132,6 +132,7 @@ export default function Layout({ children, title = '' }) {
           display: flex; align-items: center; justify-content: space-between;
           padding: 0 28px; z-index: 40;
           box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+          width: calc(100% - 240px);
         }
         .topbar-title { font-size: 17px; font-weight: 700; color: #0f172a; }
         .topbar-right { display: flex; align-items: center; gap: 12px; }
@@ -151,7 +152,7 @@ export default function Layout({ children, title = '' }) {
         .notif-empty { padding: 32px; text-align: center; color: #94a3b8; font-size: 13px; }
 
         /* Main content */
-        .main-content { margin-left: 240px; margin-top: 60px; min-height: calc(100vh - 60px); padding: 28px; }
+        .main-content { margin-left: 240px; margin-top: 60px; min-height: calc(100vh - 60px); padding: 28px; width: calc(100% - 240px); }
 
         /* Mobile */
         .mobile-menu-btn { display: none; background: none; border: none; cursor: pointer; padding: 8px; }
@@ -161,8 +162,8 @@ export default function Layout({ children, title = '' }) {
           .sidebar { transform: translateX(-100%); }
           .sidebar.open { transform: translateX(0); }
           .sidebar-overlay.open { display: block; }
-          .topbar { left: 0; padding: 0 16px; }
-          .main-content { margin-left: 0; padding: 16px; }
+          .topbar { left: 0; padding: 0 16px; width: 100%; }
+          .main-content { margin-left: 0; padding: 16px; width: 100%; }
           .mobile-menu-btn { display: flex; }
           .topbar-title { font-size: 15px; }
         }
