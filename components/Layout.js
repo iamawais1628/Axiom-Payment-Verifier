@@ -23,6 +23,7 @@ const ADMIN_NAV = [
 
 export default function Layout({ children, title = '' }) {
   const [profile, setProfile] = useState(null)
+  const [profileLoading, setProfileLoading] = useState(true)
   const [notifications, setNotifications] = useState([])
   const [showNotif, setShowNotif] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -32,9 +33,10 @@ export default function Layout({ children, title = '' }) {
 
   const init = async () => {
     const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return
+    if (!user) { setProfileLoading(false); return }
     const { data: prof } = await supabase.from('profiles').select('*').eq('id', user.id).maybeSingle()
     setProfile(prof || { email: user.email, role: 'agent' })
+    setProfileLoading(false)
     loadNotifications(user.email)
 
     supabase.channel('layout-notif')
@@ -58,7 +60,9 @@ export default function Layout({ children, title = '' }) {
 
   const logout = async () => { await supabase.auth.signOut(); router.push('/login') }
 
-  const navItems = profile?.role === 'admin' ? ADMIN_NAV
+  // Strictly use role from DB — never default to agent nav while loading
+  const navItems = profileLoading ? []
+    : profile?.role === 'admin' ? ADMIN_NAV
     : profile?.role === 'finance' ? FINANCE_NAV
     : AGENT_NAV
 
@@ -206,7 +210,9 @@ export default function Layout({ children, title = '' }) {
         {/* Nav */}
         <nav className="sidebar-nav">
           <div className="nav-section-label">Navigation</div>
-          {navItems.map(item => (
+          {profileLoading ? (
+            <div style={{padding:'12px 8px',color:'#334155',fontSize:'12px'}}>Loading...</div>
+          ) : navItems.map(item => (
             <button
               key={item.href}
               className={`nav-item${router.pathname === item.href ? ' active' : ''}`}
