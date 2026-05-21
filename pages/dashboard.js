@@ -19,8 +19,8 @@ export default function Dashboard() {
     if (!user) { router.push('/login'); return }
     const { data:prof } = await supabase.from('profiles').select('role').eq('id',user.id).maybeSingle()
     const role = prof?.role||'agent'
-    if (role==='agent') { router.push('/upload'); return }
-    if (role==='finance') { router.push('/finance'); return }
+    if (role==='agent') { router.replace('/upload'); return }
+    if (role==='finance') { router.replace('/finance'); return }
     const { data } = await supabase.from('payments').select('*').order('created_at',{ascending:false})
     if (data) setPayments(data)
     setLoading(false)
