@@ -60,15 +60,21 @@ export default function Layout({ children, title = '' }) {
 
   const logout = async () => { await supabase.auth.signOut(); router.push('/login') }
 
-  // Determine nav from BOTH profile role AND current URL path
-  // This prevents flashing wrong nav while profile loads
+  // Use profile role as primary source — URL is only used as fallback
+  // while profile is still loading from DB
   const currentPath = router.pathname
   const isAdminPath = currentPath.startsWith('/admin') || currentPath === '/dashboard'
   const isFinancePath = currentPath === '/finance'
-  
-  const navItems = profile?.role === 'admin' || isAdminPath ? ADMIN_NAV
-    : profile?.role === 'finance' || isFinancePath ? FINANCE_NAV
-    : AGENT_NAV
+  const isAgentPath = currentPath === '/upload' || currentPath === '/my-payments'
+
+  const navItems = profile
+    ? profile.role === 'admin' ? ADMIN_NAV
+      : profile.role === 'finance' ? FINANCE_NAV
+      : AGENT_NAV
+    : isAdminPath ? ADMIN_NAV
+      : isFinancePath ? FINANCE_NAV
+      : isAgentPath ? AGENT_NAV
+      : AGENT_NAV
 
   const roleLabel = profile?.role === 'admin' ? 'Admin' : profile?.role === 'finance' ? 'Finance' : 'Agent'
   const roleColor = profile?.role === 'admin' ? '#8b5cf6' : profile?.role === 'finance' ? '#f59e0b' : '#3b82f6'
