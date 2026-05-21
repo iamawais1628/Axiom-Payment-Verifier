@@ -60,7 +60,8 @@ export default function Upload() {
     if (!user) { router.push('/login'); return }
     setUploaderName(user.email)
     const { data:prof } = await supabase.from('profiles').select('role').eq('id',user.id).maybeSingle()
-    if (prof?.role==='finance') { router.push('/finance'); return }
+    if (prof?.role==='finance') { router.replace('/finance'); return }
+    if (prof?.role==='admin') { router.replace('/dashboard'); return }
   }
 
   const handleFile = (f) => { if (!f||!f.type.startsWith('image/')) return; setFile(f); setPreview(URL.createObjectURL(f)); setResult(null) }
