@@ -25,7 +25,9 @@ export default function Finance() {
     const { data:{user} } = await supabase.auth.getUser()
     if (!user) { router.push('/login'); return }
     const { data:prof } = await supabase.from('profiles').select('*').eq('id',user.id).maybeSingle()
-    if (!prof||(prof.role!=='finance'&&prof.role!=='admin')) { router.push('/upload'); return }
+    if (!prof || (prof.role!=='finance' && prof.role!=='admin')) {
+      router.replace('/upload'); return
+    }
     setProfile(prof)
     loadPayments(prof)
     supabase.channel('finance-ch')
