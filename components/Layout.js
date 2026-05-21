@@ -60,9 +60,8 @@ export default function Layout({ children, title = '' }) {
 
   const logout = async () => { await supabase.auth.signOut(); router.push('/login') }
 
-  // Strictly use role from DB — never default to agent nav while loading
-  const navItems = profileLoading ? []
-    : profile?.role === 'admin' ? ADMIN_NAV
+  // Show correct nav based on role — use last known role while loading
+  const navItems = profile?.role === 'admin' ? ADMIN_NAV
     : profile?.role === 'finance' ? FINANCE_NAV
     : AGENT_NAV
 
@@ -210,9 +209,7 @@ export default function Layout({ children, title = '' }) {
         {/* Nav */}
         <nav className="sidebar-nav">
           <div className="nav-section-label">Navigation</div>
-          {profileLoading ? (
-            <div style={{padding:'12px 8px',color:'#334155',fontSize:'12px'}}>Loading...</div>
-          ) : navItems.map(item => (
+          {navItems.map(item => (
             <button
               key={item.href}
               className={`nav-item${router.pathname === item.href ? ' active' : ''}`}
