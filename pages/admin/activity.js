@@ -36,7 +36,7 @@ export default function ActivityLog() {
     const { data:{user} } = await supabase.auth.getUser()
     if (!user) { router.push('/login'); return }
     const { data:prof } = await supabase.from('profiles').select('role').eq('id',user.id).maybeSingle()
-    if (prof?.role!=='admin') { router.push('/'); return }
+    if (prof?.role!=='admin') { router.replace('/'); return }
     loadLogs()
   }
 
