@@ -268,6 +268,51 @@ export default function Finance() {
               <div className="d-row" key={l}><div className="d-lbl">{l}</div><div className="d-val">{v}</div></div>
             ))}
 
+            {/* Fraud Score */}
+            {selected.fraud_score != null && (
+              <div style={{background:'#f8fafc',border:'1.5px solid #e2e8f0',borderRadius:'12px',padding:'14px 16px',marginTop:'14px',display:'flex',alignItems:'center',gap:'16px'}}>
+                <div style={{textAlign:'center',flexShrink:0}}>
+                  <div style={{fontSize:'28px',fontWeight:'800',color:selected.fraud_score>=80?'#16a34a':selected.fraud_score>=50?'#d97706':'#dc2626'}}>{selected.fraud_score}</div>
+                  <div style={{fontSize:'10px',color:'#94a3b8',fontWeight:'700',textTransform:'uppercase',letterSpacing:'0.5px'}}>Fraud Score</div>
+                </div>
+                <div>
+                  {selected.fraud_reasons?.length>0 && selected.fraud_reasons.map((r,i)=>(
+                    <div key={i} style={{fontSize:'12px',color:'#64748b',marginBottom:'2px'}}>• {r.replace(/_/g,' ')}</div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Sender history */}
+            {selected.sender_history && (
+              <div style={{background:'#eff6ff',border:'1.5px solid #bfdbfe',borderRadius:'12px',padding:'14px 16px',marginTop:'12px'}}>
+                <div style={{fontSize:'11px',fontWeight:'800',color:'#2563eb',textTransform:'uppercase',letterSpacing:'0.5px',marginBottom:'8px'}}>Sender History</div>
+                <div style={{display:'flex',gap:'16px',flexWrap:'wrap'}}>
+                  {[
+                    {l:'Total Payments',v:selected.sender_history.total},
+                    {l:'Approved',v:selected.sender_history.approved,c:'#16a34a'},
+                    {l:'Rejected',v:selected.sender_history.rejected,c:'#dc2626'},
+                    {l:'Total Amount',v:`$${selected.sender_history.totalAmount}`},
+                  ].map(x=>(
+                    <div key={x.l} style={{textAlign:'center'}}>
+                      <div style={{fontSize:'18px',fontWeight:'800',color:x.c||'#0f172a'}}>{x.v}</div>
+                      <div style={{fontSize:'10px',color:'#94a3b8',fontWeight:'600'}}>{x.l}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Amount mismatch warning */}
+            {selected.amount_mismatch && (
+              <div style={{background:'#fff5f5',border:'1.5px solid #fecaca',borderRadius:'12px',padding:'14px 16px',marginTop:'12px'}}>
+                <div style={{fontSize:'13px',fontWeight:'700',color:'#dc2626'}}>⚠️ Amount Mismatch Detected</div>
+                <div style={{fontSize:'12px',color:'#dc2626',opacity:0.8,marginTop:'4px'}}>
+                  Expected: {selected.expected_amount} · Got: {selected.amount}
+                </div>
+              </div>
+            )}
+
             {selected.agent_note && (
               <div className="note-box">
                 <div style={{fontSize:'10px',fontWeight:'800',color:'#2563eb',textTransform:'uppercase',letterSpacing:'0.5px',marginBottom:'5px'}}>Agent Note</div>
