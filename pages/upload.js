@@ -37,6 +37,7 @@ export default function Upload() {
   const [result, setResult] = useState(null)
   const [dragOver, setDragOver] = useState(false)
   const [note, setNote] = useState('')
+  const [expectedAmount, setExpectedAmount] = useState('')
   const fileRef = useRef(null)
   const router = useRouter()
 
@@ -76,7 +77,7 @@ export default function Upload() {
     setLoading(false)
   }
 
-  const reset = (m) => { setFile(null); setPreview(null); setResult(null); setNote(''); if(m) setMethod(m) }
+  const reset = (m) => { setFile(null); setPreview(null); setResult(null); setNote(''); setExpectedAmount(''); if(m) setMethod(m) }
 
   const S = {
     verified:   {icon:'✅',label:'Payment Verified',    color:'#16a34a',bg:'#f0fdf4',border:'#bbf7d0',pBg:'#dcfce7',pColor:'#15803d'},
@@ -194,6 +195,8 @@ export default function Upload() {
                   <label className="field-label">Your Email</label>
                   <input type="text" className="txt-input" value={uploaderName} onChange={e=>setUploaderName(e.target.value)} required/>
 
+                  <label className="field-label">Expected Amount <span style={{color:'#cbd5e1',textTransform:'none',fontWeight:400,fontSize:'11px'}}>(optional — for mismatch detection)</span></label>
+                  <input type="text" className="txt-input" style={{marginBottom:'16px'}} value={expectedAmount} onChange={e=>setExpectedAmount(e.target.value)} placeholder="e.g. $25.00"/>
                   <label className="field-label">Note for Finance <span style={{color:'#cbd5e1',textTransform:'none',fontWeight:400,fontSize:'11px'}}>(optional)</span></label>
                   <textarea className="note-input" rows={2} value={note} onChange={e=>setNote(e.target.value)} placeholder="e.g. Order #445 for client John Smith..."/>
 
@@ -241,7 +244,27 @@ export default function Upload() {
             <div className="result-icon-big">{meta.icon}</div>
             <div className="result-heading" style={{color:meta.color}}>{meta.label}</div>
             {result.message && <div className="result-pill" style={{background:meta.pBg,color:meta.pColor}}>{result.message}</div>}
+            {result.fraudScore != null && (
+              <div style={{marginTop:'12px',display:'inline-flex',alignItems:'center',gap:'10px',background:'#f8fafc',border:'1.5px solid #e2e8f0',borderRadius:'12px',padding:'10px 16px'}}>
+                <div style={{textAlign:'center'}}>
+                  <div style={{fontSize:'24px',fontWeight:'800',color:result.fraudScore>=80?'#16a34a':result.fraudScore>=50?'#d97706':'#dc2626'}}>{result.fraudScore}</div>
+                  <div style={{fontSize:'10px',color:'#94a3b8',fontWeight:'700',textTransform:'uppercase',letterSpacing:'0.5px'}}>Fraud Score</div>
+                </div>
+                <div style={{width:'1px',height:'36px',background:'#e2e8f0'}}/>
+                <div style={{fontSize:'12px',color:'#64748b'}}>
+                  {result.fraudScore>=80?'✅ Low risk payment':''}
+                  {result.fraudScore>=50&&result.fraudScore<80?'⚠️ Moderate risk':''}
+                  {result.fraudScore<50?'🚨 High risk — review carefully':''}
+                </div>
+              </div>
+            )}
             {result.similarity!=null && <div style={{fontSize:'12px',color:'#94a3b8',marginTop:'6px'}}>{result.similarity}% visual similarity</div>}
+            {result.ruleFlags?.length>0 && (
+              <div style={{marginTop:'10px',background:'#fffbeb',border:'1.5px solid #fde68a',borderRadius:'10px',padding:'10px 14px',textAlign:'left'}}>
+                <div style={{fontSize:'11px',fontWeight:'800',color:'#b45309',marginBottom:'5px'}}>⚙️ Rule Flags</div>
+                {result.ruleFlags.map((f,i)=><div key={i} style={{fontSize:'12px',color:'#92400e'}}>• {f}</div>)}
+              </div>
+            )}
           </div>
           <div className="result-body">
             {result.details && (
