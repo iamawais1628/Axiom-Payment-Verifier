@@ -72,34 +72,34 @@ export default function SenderHistory() {
     <Layout title="Sender History">
       <style>{`
         .controls { display: flex; gap: 10px; margin-bottom: 20px; }
-        .search-inp { flex: 1; background: #fff; border: 1.5px solid #e2e8f0; border-radius: 10px; padding: 11px 14px; color: #0f172a; font-size: 13px; font-family: 'Inter',sans-serif; outline: none; transition: border-color 0.2s; }
+        .search-inp { flex: 1; background: var(--card); border: 1.5px solid var(--border); border-radius: 10px; padding: 11px 14px; color: var(--text); font-size: 13px; font-family: 'Inter',sans-serif; outline: none; transition: border-color 0.2s; }
         .search-inp:focus { border-color: #3b82f6; }
-        .table-wrap { background: #fff; border-radius: 16px; overflow: hidden; border: 1px solid #e2e8f0; box-shadow: 0 1px 6px rgba(0,0,0,0.05); }
+        .table-wrap { background: var(--card); border-radius: 16px; overflow: hidden; border: 1px solid var(--border); box-shadow: 0 1px 6px rgba(0,0,0,0.05); }
         .tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
-        .tbl thead tr { background: #f8fafc; }
-        .tbl th { padding: 12px 16px; text-align: left; font-size: 10px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.8px; font-weight: 700; border-bottom: 1.5px solid #e2e8f0; }
-        .tbl td { padding: 14px 16px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
+        .tbl thead tr { background: var(--bg); }
+        .tbl th { padding: 12px 16px; text-align: left; font-size: 10px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.8px; font-weight: 700; border-bottom: 1.5px solid var(--border); }
+        .tbl td { padding: 14px 16px; border-bottom: 1px solid var(--border); vertical-align: middle; }
         .tbl tr:last-child td { border-bottom: none; }
-        .tbl tbody tr:hover td { background: #f8fafc; cursor: pointer; }
-        .sender-name { font-size: 14px; font-weight: 700; color: #0f172a; }
+        .tbl tbody tr:hover td { background: var(--bg); cursor: pointer; }
+        .sender-name { font-size: 14px; font-weight: 700; color: var(--text); }
         .method-tag { display: inline-flex; align-items: center; gap: 5px; background: #f0f4ff; color: #2563eb; border-radius: 6px; padding: 3px 8px; font-size: 11px; font-weight: 600; }
         .method-dot { width: 8px; height: 8px; border-radius: 50%; }
         .risk-badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; }
         .stat-cell { font-size: 15px; font-weight: 800; }
         .empty { text-align: center; padding: 60px; color: #cbd5e1; font-size: 14px; }
         .overlay { position: fixed; inset: 0; background: rgba(15,23,42,0.55); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(4px); }
-        .modal { background: #fff; border-radius: 20px; padding: 32px; width: 100%; max-width: 560px; box-shadow: 0 20px 60px rgba(0,0,0,0.2); max-height: 90vh; overflow-y: auto; }
+        .modal { background: var(--card); border-radius: 20px; padding: 32px; width: 100%; max-width: 560px; box-shadow: 0 20px 60px rgba(0,0,0,0.2); max-height: 90vh; overflow-y: auto; }
         .modal-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 20px; }
-        .modal-name { font-size: 20px; font-weight: 800; color: #0f172a; }
+        .modal-name { font-size: 20px; font-weight: 800; color: var(--text); }
         .modal-method { font-size: 13px; color: #94a3b8; margin-top: 3px; }
         .stats-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin-bottom: 20px; }
-        .stat-box { background: #f8fafc; border-radius: 12px; padding: 14px; text-align: center; }
+        .stat-box { background: var(--bg); border-radius: 12px; padding: 14px; text-align: center; }
         .stat-box-num { font-size: 22px; font-weight: 800; line-height: 1; }
         .stat-box-lbl { font-size: 10px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; font-weight: 600; }
-        .payment-item { display: flex; justify-content: space-between; align-items: center; padding: 11px 0; border-bottom: 1px solid #f1f5f9; }
+        .payment-item { display: flex; justify-content: space-between; align-items: center; padding: 11px 0; border-bottom: 1px solid var(--border); }
         .payment-item:last-child { border-bottom: none; }
         .badge-sm { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 10px; font-weight: 700; text-transform: uppercase; }
-        .btn-close { width: 100%; margin-top: 16px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 10px; padding: 12px; color: #64748b; font-size: 13px; font-family: 'Inter',sans-serif; cursor: pointer; font-weight: 600; }
+        .btn-close { width: 100%; margin-top: 16px; background: var(--bg); border: 1.5px solid var(--border); border-radius: 10px; padding: 12px; color: var(--text-muted); font-size: 13px; font-family: 'Inter',sans-serif; cursor: pointer; font-weight: 600; }
         .risk-banner { border-radius: 12px; padding: 14px 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
         .ss-link { color: #2563eb; font-size: 12px; text-decoration: none; font-weight: 500; }
         .ss-link:hover { text-decoration: underline; }
