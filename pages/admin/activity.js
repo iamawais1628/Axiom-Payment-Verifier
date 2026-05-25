@@ -100,24 +100,24 @@ export default function ActivityLog() {
     <Layout title="Activity Log">
       <style>{`
         .page-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px}
-        .export-btn{background:none;border:1.5px solid #e2e8f0;border-radius:10px;color:#64748b;font-size:13px;padding:9px 16px;cursor:pointer;font-family:'Inter',sans-serif;font-weight:600;transition:all 0.2s}
+        .export-btn{background:none;border:1.5px solid var(--border);border-radius:10px;color:var(--text-muted);font-size:13px;padding:9px 16px;cursor:pointer;font-family:'Inter',sans-serif;font-weight:600;transition:all 0.2s}
         .export-btn:hover{border-color:#16a34a;color:#16a34a;background:#f0fdf4}
         .controls{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap}
-        .search-inp{flex:1;min-width:200px;background:#fff;border:1.5px solid #e2e8f0;border-radius:10px;padding:10px 14px;color:#0f172a;font-size:13px;font-family:'Inter',sans-serif;outline:none;transition:border-color 0.2s}
+        .search-inp{flex:1;min-width:200px;background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:10px 14px;color:var(--text);font-size:13px;font-family:'Inter',sans-serif;outline:none;transition:border-color 0.2s}
         .search-inp:focus{border-color:#3b82f6}
-        .filter-select{background:#fff;border:1.5px solid #e2e8f0;border-radius:10px;padding:10px 13px;color:#475569;font-size:13px;font-family:'Inter',sans-serif;outline:none;cursor:pointer}
-        .count-badge{background:#f1f5f9;color:#64748b;font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px;margin-left:8px}
+        .filter-select{background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:10px 13px;color:var(--text-muted);font-size:13px;font-family:'Inter',sans-serif;outline:none;cursor:pointer}
+        .count-badge{background:var(--bg);color:var(--text-muted);font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px;margin-left:8px}
         .log-list{display:flex;flex-direction:column;gap:8px}
-        .log-item{background:#fff;border-radius:14px;padding:16px 18px;border:1px solid #e2e8f0;display:flex;align-items:flex-start;gap:14px;box-shadow:0 1px 4px rgba(0,0,0,0.04);transition:box-shadow 0.15s}
+        .log-item{background:var(--card);border-radius:14px;padding:16px 18px;border:1px solid var(--border);display:flex;align-items:flex-start;gap:14px;box-shadow:0 1px 4px rgba(0,0,0,0.04);transition:box-shadow 0.15s}
         .log-item:hover{box-shadow:0 3px 12px rgba(0,0,0,0.08)}
         .log-icon-wrap{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
         .log-body{flex:1;min-width:0}
-        .log-detail{font-size:13px;color:#334155;font-weight:500;line-height:1.5;word-break:break-word}
+        .log-detail{font-size:13px;color:var(--text);font-weight:500;line-height:1.5;word-break:break-word}
         .log-meta{display:flex;gap:10px;margin-top:6px;flex-wrap:wrap;align-items:center}
         .log-actor{font-size:12px;color:#2563eb;font-weight:700}
         .log-time{font-size:11px;color:#cbd5e1;font-weight:500}
         .log-type-badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:0.5px}
-        .empty{text-align:center;padding:60px;color:#cbd5e1;font-size:14px;background:#fff;border-radius:16px;border:1px solid #e2e8f0}
+        .empty{text-align:center;padding:60px;color:#cbd5e1;font-size:14px;background:var(--card);border-radius:16px;border:1px solid #e2e8f0}
       `}</style>
 
       <div className="page-header">
