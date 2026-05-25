@@ -65,34 +65,34 @@ export default function Announcements() {
         .add-btn { background: #1d4ed8; border: none; border-radius: 10px; color: #fff; font-size: 13px; font-weight: 700; padding: 10px 20px; cursor: pointer; font-family: 'Inter',sans-serif; }
         .add-btn:hover { background: #1e40af; }
         .ann-list { display: flex; flex-direction: column; gap: 12px; }
-        .ann-card { background: #fff; border-radius: 16px; overflow: hidden; border: 1px solid #e2e8f0; box-shadow: 0 1px 6px rgba(0,0,0,0.05); }
+        .ann-card { background: var(--card); border-radius: 16px; overflow: hidden; border: 1px solid var(--border); box-shadow: 0 1px 6px rgba(0,0,0,0.05); }
         .ann-stripe { height: 4px; }
         .ann-body { padding: 18px 20px; display: flex; gap: 14px; align-items: flex-start; }
         .ann-icon { font-size: 24px; flex-shrink: 0; }
         .ann-content { flex: 1; }
-        .ann-title { font-size: 15px; font-weight: 800; color: #0f172a; margin-bottom: 5px; }
-        .ann-message { font-size: 13px; color: #475569; line-height: 1.6; }
+        .ann-title { font-size: 15px; font-weight: 800; color: var(--text); margin-bottom: 5px; }
+        .ann-message { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
         .ann-meta { font-size: 11px; color: #cbd5e1; margin-top: 8px; }
         .ann-actions { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
-        .toggle-btn { background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 8px; color: #64748b; font-size: 12px; font-weight: 700; padding: 6px 12px; cursor: pointer; font-family: 'Inter',sans-serif; }
+        .toggle-btn { background: var(--bg); border: 1.5px solid var(--border); border-radius: 8px; color: var(--text-muted); font-size: 12px; font-weight: 700; padding: 6px 12px; cursor: pointer; font-family: 'Inter',sans-serif; }
         .toggle-btn.on { background: #f0fdf4; border-color: #bbf7d0; color: #15803d; }
         .del-btn { background: none; border: 1.5px solid #fecaca; border-radius: 8px; color: #dc2626; font-size: 12px; padding: 6px 10px; cursor: pointer; font-family: 'Inter',sans-serif; }
         .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; }
         .overlay { position: fixed; inset: 0; background: rgba(15,23,42,0.55); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(4px); }
-        .modal { background: #fff; border-radius: 20px; padding: 32px; width: 100%; max-width: 480px; box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
-        .modal-title { font-size: 18px; font-weight: 800; color: #0f172a; margin-bottom: 20px; }
+        .modal { background: var(--card); border-radius: 20px; padding: 32px; width: 100%; max-width: 480px; box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
+        .modal-title { font-size: 18px; font-weight: 800; color: var(--text); margin-bottom: 20px; }
         .field { margin-bottom: 16px; }
-        .field label { display: block; font-size: 11px; font-weight: 700; color: #475569; letter-spacing: 0.4px; margin-bottom: 7px; text-transform: uppercase; }
-        .field input, .field select, .field textarea { width: 100%; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 10px; padding: 12px 15px; color: #0f172a; font-size: 14px; font-family: 'Inter',sans-serif; outline: none; transition: border-color 0.2s; }
-        .field input:focus, .field select:focus, .field textarea:focus { border-color: #3b82f6; background: #fff; }
+        .field label { display: block; font-size: 11px; font-weight: 700; color: var(--text-muted); letter-spacing: 0.4px; margin-bottom: 7px; text-transform: uppercase; }
+        .field input, .field select, .field textarea { width: 100%; background: var(--bg); border: 1.5px solid var(--border); border-radius: 10px; padding: 12px 15px; color: var(--text); font-size: 14px; font-family: 'Inter',sans-serif; outline: none; transition: border-color 0.2s; }
+        .field input:focus, .field select:focus, .field textarea:focus { border-color: #3b82f6; background: var(--card); }
         .field textarea { resize: none; }
         .type-grid { display: flex; gap: 8px; }
-        .type-btn { flex: 1; padding: 10px; border-radius: 10px; border: 1.5px solid #e2e8f0; background: #f8fafc; cursor: pointer; text-align: center; font-size: 12px; font-weight: 700; font-family: 'Inter',sans-serif; transition: all 0.15s; }
+        .type-btn { flex: 1; padding: 10px; border-radius: 10px; border: 1.5px solid var(--border); background: var(--bg); cursor: pointer; text-align: center; font-size: 12px; font-weight: 700; font-family: 'Inter',sans-serif; transition: all 0.15s; }
         .type-btn.sel { border-color: #3b82f6; background: #eff6ff; color: #2563eb; }
         .modal-actions { display: flex; gap: 10px; margin-top: 8px; }
         .btn-save { flex: 1; background: #1d4ed8; border: none; border-radius: 10px; padding: 13px; color: #fff; font-size: 14px; font-weight: 700; font-family: 'Inter',sans-serif; cursor: pointer; }
-        .btn-cancel { flex: 1; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 10px; padding: 13px; color: #475569; font-size: 14px; font-weight: 600; font-family: 'Inter',sans-serif; cursor: pointer; }
-        .empty { text-align: center; padding: 60px; color: #cbd5e1; font-size: 14px; background: #fff; border-radius: 16px; border: 1px solid #e2e8f0; }
+        .btn-cancel { flex: 1; background: var(--bg); border: 1.5px solid var(--border); border-radius: 10px; padding: 13px; color: var(--text-muted); font-size: 14px; font-weight: 600; font-family: 'Inter',sans-serif; cursor: pointer; }
+        .empty { text-align: center; padding: 60px; color: #cbd5e1; font-size: 14px; background: var(--card); border-radius: 16px; border: 1px solid var(--border); }
         .toast { position: fixed; bottom: 24px; right: 24px; padding: 12px 20px; border-radius: 12px; font-size: 13px; font-weight: 600; z-index: 999; box-shadow: 0 4px 20px rgba(0,0,0,0.15); animation: slidein 0.3s ease; }
         .toast.success { background: #0f172a; color: #fff; }
         .toast.error { background: #dc2626; color: #fff; }
