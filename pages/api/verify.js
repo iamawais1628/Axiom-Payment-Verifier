@@ -99,15 +99,19 @@ Rules: sender_name = who SENT money. Return ONLY the JSON.`
 }
 
 function getChecks(method) {
+  // dupThresh: must be THIS similar to flag as duplicate (higher = stricter, fewer false positives)
+  // cropThresh: must be THIS similar to flag as possible crop
+  // Raised thresholds significantly — same app screenshots look similar by design
+  // pHash should only catch near-pixel-identical images, not same-app different-payment screenshots
   return {
-    CashApp:  {txnId:false,amtSender:true, amtDate:false,maxAge:48,dupThresh:98,cropThresh:92},
-    Chime:    {txnId:false,amtSender:true, amtDate:false,maxAge:48,dupThresh:98,cropThresh:92},
-    Zelle:    {txnId:true, amtSender:true, amtDate:true, maxAge:48,dupThresh:97,cropThresh:85},
-    TapTap:   {txnId:true, amtSender:true, amtDate:true, maxAge:48,dupThresh:97,cropThresh:85},
-    Venmo:    {txnId:true, amtSender:true, amtDate:false,maxAge:48,dupThresh:97,cropThresh:88},
-    PayPal:   {txnId:true, amtSender:false,amtDate:false,maxAge:72,dupThresh:98,cropThresh:88},
-    Other:    {txnId:true, amtSender:true, amtDate:false,maxAge:72,dupThresh:99,cropThresh:88},
-  }[method]||{txnId:true,amtSender:true,amtDate:false,maxAge:72,dupThresh:99,cropThresh:88}
+    CashApp:  {txnId:false,amtSender:true, amtDate:false,maxAge:48,dupThresh:99,cropThresh:97},
+    Chime:    {txnId:false,amtSender:true, amtDate:false,maxAge:48,dupThresh:99,cropThresh:97},
+    Zelle:    {txnId:true, amtSender:true, amtDate:true, maxAge:48,dupThresh:99,cropThresh:96},
+    TapTap:   {txnId:true, amtSender:true, amtDate:true, maxAge:48,dupThresh:99,cropThresh:96},
+    Venmo:    {txnId:true, amtSender:true, amtDate:false,maxAge:48,dupThresh:99,cropThresh:96},
+    PayPal:   {txnId:true, amtSender:false,amtDate:false,maxAge:72,dupThresh:99,cropThresh:97},
+    Other:    {txnId:true, amtSender:true, amtDate:false,maxAge:72,dupThresh:99,cropThresh:97},
+  }[method]||{txnId:true,amtSender:true,amtDate:false,maxAge:72,dupThresh:99,cropThresh:97}
 }
 
 async function notifyFinance(paymentMethod, uploaderEmail, paymentId) {
@@ -268,12 +272,18 @@ export default async function handler(req, res) {
       } catch {}
     }
 
-    // STEP 9 — Visual pHash
+    // STEP 9 — Visual pHash (last resort only — catches same exact image resized/cropped)
+    // Only compare against payments with SAME sender AND same amount to avoid
+    // flagging different payments that look similar because they use the same app UI
     const {data:allPayments} = await supabase.from('payments').select('*').eq('payment_method',paymentMethod).not('phash','is',null)
     if (allPayments?.length>0) {
       let highSim=0,highMatch=null
       for (const p of allPayments) {
         if (!p.phash||p.image_hash===imageHash) continue
+        // Skip if different sender — same app UI makes unrelated payments look similar
+        if (p.sender_name && extracted.sender_name &&
+            p.sender_name !== 'UNKNOWN' && extracted.sender_name !== 'UNKNOWN' &&
+            p.sender_name !== extracted.sender_name) continue
         const sim=similarity(phash,p.phash)
         if (sim>highSim) {highSim=sim;highMatch=p}
       }
