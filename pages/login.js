@@ -7,7 +7,22 @@ export default function Login() {
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [resetMode, setResetMode] = useState(false)
+  const [resetEmail, setResetEmail] = useState('')
+  const [resetSent, setResetSent] = useState(false)
+  const [resetLoading, setResetLoading] = useState(false)
   const router = useRouter()
+
+  const handleReset = async (e) => {
+    e.preventDefault()
+    setResetLoading(true)
+    const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    })
+    if (error) { setError(error.message) }
+    else { setResetSent(true); setError('') }
+    setResetLoading(false)
+  }
 
   const handleLogin = async (e) => {
     e.preventDefault()
@@ -137,6 +152,13 @@ export default function Login() {
             </button>
           </form>
 
+          <div style={{textAlign:'center',marginTop:'16px'}}>
+            <button onClick={()=>{setResetMode(true);setError('');setResetSent(false)}}
+              style={{background:'none',border:'none',color:'#3b82f6',fontSize:'13px',cursor:'pointer',fontFamily:'Inter,sans-serif',fontWeight:'500'}}>
+              Forgot password?
+            </button>
+          </div>
+
           <div className="divider">
             <div className="divider-line"/>
             <div className="divider-text">Role Access</div>
@@ -157,6 +179,51 @@ export default function Login() {
           </div>
 
           <div className="form-footer">Contact your admin to get access</div>
+
+          {/* Password Reset Modal */}
+          {resetMode && (
+            <div style={{position:'fixed',inset:0,background:'rgba(15,23,42,0.6)',zIndex:100,display:'flex',alignItems:'center',justifyContent:'center',padding:'20px',backdropFilter:'blur(4px)'}}>
+              <div style={{background:'#fff',borderRadius:'20px',padding:'32px',width:'100%',maxWidth:'380px',boxShadow:'0 20px 60px rgba(0,0,0,0.2)'}}>
+                {resetSent ? (
+                  <>
+                    <div style={{textAlign:'center',fontSize:'48px',marginBottom:'16px'}}>📧</div>
+                    <div style={{fontSize:'18px',fontWeight:'800',color:'#0f172a',marginBottom:'8px',textAlign:'center'}}>Check your email</div>
+                    <div style={{fontSize:'13px',color:'#64748b',textAlign:'center',lineHeight:'1.6',marginBottom:'24px'}}>
+                      We sent a password reset link to <strong>{resetEmail}</strong>
+                    </div>
+                    <button onClick={()=>setResetMode(false)}
+                      style={{width:'100%',background:'#1d4ed8',border:'none',borderRadius:'10px',padding:'13px',color:'#fff',fontSize:'14px',fontWeight:'700',fontFamily:'Inter,sans-serif',cursor:'pointer'}}>
+                      Back to Login
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <div style={{fontSize:'18px',fontWeight:'800',color:'#0f172a',marginBottom:'6px'}}>Reset Password</div>
+                    <div style={{fontSize:'13px',color:'#64748b',marginBottom:'22px'}}>Enter your email and we'll send you a reset link</div>
+                    <form onSubmit={handleReset}>
+                      <div style={{marginBottom:'16px'}}>
+                        <label style={{display:'block',fontSize:'11px',fontWeight:'700',color:'#475569',letterSpacing:'0.5px',textTransform:'uppercase',marginBottom:'8px'}}>Email Address</label>
+                        <input type="email" value={resetEmail} onChange={e=>setResetEmail(e.target.value)}
+                          style={{width:'100%',background:'#f8fafc',border:'1.5px solid #e2e8f0',borderRadius:'10px',padding:'12px 15px',color:'#0f172a',fontSize:'14px',fontFamily:'Inter,sans-serif',outline:'none'}}
+                          placeholder="you@company.com" required/>
+                      </div>
+                      {error && <div style={{background:'#fff5f5',border:'1.5px solid #fecaca',borderRadius:'10px',padding:'10px 14px',color:'#dc2626',fontSize:'13px',marginBottom:'14px'}}>⚠️ {error}</div>}
+                      <div style={{display:'flex',gap:'10px'}}>
+                        <button type="button" onClick={()=>setResetMode(false)}
+                          style={{flex:1,background:'#f8fafc',border:'1.5px solid #e2e8f0',borderRadius:'10px',padding:'12px',color:'#475569',fontSize:'14px',fontWeight:'600',fontFamily:'Inter,sans-serif',cursor:'pointer'}}>
+                          Cancel
+                        </button>
+                        <button type="submit" disabled={resetLoading}
+                          style={{flex:1,background:'#1d4ed8',border:'none',borderRadius:'10px',padding:'12px',color:'#fff',fontSize:'14px',fontWeight:'700',fontFamily:'Inter,sans-serif',cursor:'pointer',opacity:resetLoading?0.6:1}}>
+                          {resetLoading?'Sending...':'Send Reset Link'}
+                        </button>
+                      </div>
+                    </form>
+                  </>
+                )}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
