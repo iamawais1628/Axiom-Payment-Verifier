@@ -58,32 +58,32 @@ export default function MyPayments() {
     <Layout title="My Payments">
       <style>{`
         .stats-row { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
-        .stat-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 14px; padding: 16px 20px; flex: 1; min-width: 110px; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
+        .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 16px 20px; flex: 1; min-width: 110px; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
         .stat-num { font-size: 28px; font-weight: 800; line-height: 1; }
         .stat-lbl { font-size: 11px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.7px; margin-top: 5px; font-weight: 600; }
         .controls { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
-        .search-inp { flex: 1; min-width: 200px; background: #fff; border: 1.5px solid #e2e8f0; border-radius: 10px; padding: 10px 14px; color: #0f172a; font-size: 13px; font-family: 'Inter',sans-serif; outline: none; transition: border-color 0.2s; }
+        .search-inp { flex: 1; min-width: 200px; background: var(--card); border: 1.5px solid var(--border); border-radius: 10px; padding: 10px 14px; color: var(--text); font-size: 13px; font-family: 'Inter',sans-serif; outline: none; transition: border-color 0.2s; }
         .search-inp:focus { border-color: #3b82f6; }
         .filter-tabs { display: flex; gap: 6px; flex-wrap: wrap; }
-        .ftab { padding: 8px 16px; border-radius: 30px; font-size: 12px; font-weight: 700; cursor: pointer; border: 1.5px solid #e2e8f0; background: #fff; color: #64748b; font-family: 'Inter',sans-serif; transition: all 0.15s; }
-        .ftab.active { background: #0f172a; color: #fff; border-color: #0f172a; }
+        .ftab { padding: 8px 16px; border-radius: 30px; font-size: 12px; font-weight: 700; cursor: pointer; border: 1.5px solid var(--border); background: var(--card); color: var(--text-muted); font-family: 'Inter',sans-serif; transition: all 0.15s; }
+        .ftab.active { background: #0f172a; color: #fff; border-color: var(--text); }
         .pay-list { display: flex; flex-direction: column; gap: 10px; }
-        .pay-card { background: #fff; border-radius: 14px; padding: 18px 20px; border: 1.5px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; gap: 16px; cursor: pointer; transition: all 0.15s; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
+        .pay-card { background: var(--card); border-radius: 14px; padding: 18px 20px; border: 1.5px solid var(--border); display: flex; justify-content: space-between; align-items: center; gap: 16px; cursor: pointer; transition: all 0.15s; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
         .pay-card:hover { border-color: #93c5fd; box-shadow: 0 2px 12px rgba(0,0,0,0.08); transform: translateY(-1px); }
         .pay-method { font-size: 11px; color: #94a3b8; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
-        .pay-amount { font-size: 22px; font-weight: 800; color: #0f172a; }
-        .pay-sender { font-size: 13px; color: #475569; margin-top: 3px; }
+        .pay-amount { font-size: 22px; font-weight: 800; color: var(--text); }
+        .pay-sender { font-size: 13px; color: var(--text-muted); margin-top: 3px; }
         .pay-date { font-size: 11px; color: #cbd5e1; margin-top: 5px; }
         .status-pill { display: flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 30px; font-size: 12px; font-weight: 700; white-space: nowrap; }
         .ai-badge { font-size: 10px; padding: 3px 9px; border-radius: 20px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px; }
-        .empty { text-align: center; padding: 60px; color: #cbd5e1; font-size: 14px; background: #fff; border-radius: 16px; border: 1px solid #e2e8f0; }
+        .empty { text-align: center; padding: 60px; color: #cbd5e1; font-size: 14px; background: var(--card); border-radius: 16px; border: 1px solid var(--border); }
         .overlay { position: fixed; inset: 0; background: rgba(15,23,42,0.5); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(4px); }
-        .modal { background: #fff; border-radius: 20px; padding: 32px; width: 100%; max-width: 460px; box-shadow: 0 20px 60px rgba(0,0,0,0.2); max-height: 88vh; overflow-y: auto; }
-        .modal-title { font-size: 18px; font-weight: 800; color: #0f172a; margin-bottom: 20px; }
-        .d-row { display: flex; justify-content: space-between; gap: 12px; padding: 9px 0; border-bottom: 1px solid #f1f5f9; }
+        .modal { background: var(--card); border-radius: 20px; padding: 32px; width: 100%; max-width: 460px; box-shadow: 0 20px 60px rgba(0,0,0,0.2); max-height: 88vh; overflow-y: auto; }
+        .modal-title { font-size: 18px; font-weight: 800; color: var(--text); margin-bottom: 20px; }
+        .d-row { display: flex; justify-content: space-between; gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--border); }
         .d-row:last-of-type { border-bottom: none; }
         .d-lbl { font-size: 11px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.6px; font-weight: 700; }
-        .d-val { font-size: 13px; color: #0f172a; font-weight: 600; text-align: right; word-break: break-all; }
+        .d-val { font-size: 13px; color: var(--text); font-weight: 600; text-align: right; word-break: break-all; }
         .status-banner { border-radius: 14px; padding: 20px; margin: 18px 0; text-align: center; }
         .status-banner-icon { font-size: 36px; margin-bottom: 8px; }
         .status-banner-label { font-size: 17px; font-weight: 800; }
@@ -96,7 +96,7 @@ export default function MyPayments() {
         .ss-link:hover { text-decoration: underline; }
         .reupload-btn { width: 100%; background: #1d4ed8; border: none; border-radius: 10px; padding: 12px; color: #fff; font-size: 14px; font-weight: 700; font-family: 'Inter',sans-serif; cursor: pointer; margin-top: 14px; transition: background 0.2s; }
         .reupload-btn:hover { background: #1e40af; }
-        .close-btn { width: 100%; margin-top: 10px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 10px; padding: 12px; color: #64748b; font-size: 13px; font-family: 'Inter',sans-serif; cursor: pointer; font-weight: 600; }
+        .close-btn { width: 100%; margin-top: 10px; background: var(--bg); border: 1.5px solid var(--border); border-radius: 10px; padding: 12px; color: var(--text-muted); font-size: 13px; font-family: 'Inter',sans-serif; cursor: pointer; font-weight: 600; }
         @media(max-width:640px){ .pay-card{flex-direction:column;align-items:flex-start} .pay-amount{font-size:18px} }
       `}</style>
 
