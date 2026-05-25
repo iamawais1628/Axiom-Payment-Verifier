@@ -79,36 +79,36 @@ export default function AdminUsers() {
         .page-title-note{font-size:13px;color:#94a3b8;margin-top:2px}
         .add-btn{background:#1d4ed8;border:none;border-radius:10px;color:#fff;font-size:13px;font-weight:700;padding:10px 20px;cursor:pointer;font-family:'Inter',sans-serif;transition:background 0.2s}
         .add-btn:hover{background:#1e40af}
-        .table-wrap{background:#fff;border-radius:16px;overflow:hidden;border:1px solid #e2e8f0;box-shadow:0 1px 6px rgba(0,0,0,0.05)}
+        .table-wrap{background:var(--card);border-radius:16px;overflow:hidden;border:1px solid var(--border);box-shadow:0 1px 6px rgba(0,0,0,0.05)}
         .tbl{width:100%;border-collapse:collapse;font-size:13px}
         .tbl thead tr{background:#f8fafc}
         .tbl th{padding:12px 16px;text-align:left;font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:0.8px;font-weight:700;border-bottom:1.5px solid #e2e8f0}
-        .tbl td{padding:14px 16px;border-bottom:1px solid #f1f5f9;color:#334155;vertical-align:middle}
+        .tbl td{padding:14px 16px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle}
         .tbl tr:last-child td{border-bottom:none}
         .tbl tbody tr:hover td{background:#f8fafc}
         .badge{display:inline-block;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.3px}
         .method-tag{display:inline-block;background:#f0f4ff;color:#2563eb;border-radius:6px;padding:2px 8px;font-size:11px;font-weight:600;margin:2px}
-        .action-btn{background:#f8fafc;border:1px solid #e2e8f0;border-radius:7px;color:#475569;font-size:12px;padding:6px 12px;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.15s;margin-right:6px;font-weight:500}
+        .action-btn{background:var(--bg);border:1px solid var(--border);border-radius:7px;color:var(--text-muted);font-size:12px;padding:6px 12px;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.15s;margin-right:6px;font-weight:500}
         .action-btn:hover{border-color:#3b82f6;color:#2563eb}
         .action-btn.del:hover{border-color:#dc2626;color:#dc2626}
         .empty{text-align:center;padding:60px;color:#cbd5e1;font-size:14px}
         .overlay{position:fixed;inset:0;background:rgba(15,23,42,0.55);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
-        .modal{background:#fff;border-radius:20px;padding:32px;width:100%;max-width:480px;box-shadow:0 20px 60px rgba(0,0,0,0.2);max-height:90vh;overflow-y:auto}
-        .modal-title{font-size:18px;font-weight:800;color:#0f172a;margin-bottom:6px}
+        .modal{background:var(--card);border-radius:20px;padding:32px;width:100%;max-width:480px;box-shadow:0 20px 60px rgba(0,0,0,0.2);max-height:90vh;overflow-y:auto}
+        .modal-title{font-size:18px;font-weight:800;color:var(--text);margin-bottom:6px}
         .modal-sub{font-size:13px;color:#94a3b8;margin-bottom:22px}
         .field{margin-bottom:16px}
-        .field label{display:block;font-size:11px;font-weight:700;color:#475569;letter-spacing:0.4px;margin-bottom:7px;text-transform:uppercase}
-        .field input,.field select{width:100%;background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:10px;padding:12px 15px;color:#0f172a;font-size:14px;font-family:'Inter',sans-serif;outline:none;transition:border-color 0.2s}
+        .field label{display:block;font-size:11px;font-weight:700;color:var(--text-muted);letter-spacing:0.4px;margin-bottom:7px;text-transform:uppercase}
+        .field input,.field select{width:100%;background:var(--bg);border:1.5px solid var(--border);border-radius:10px;padding:12px 15px;color:var(--text);font-size:14px;font-family:'Inter',sans-serif;outline:none;transition:border-color 0.2s}
         .field input:focus,.field select:focus{border-color:#3b82f6;background:#fff}
         .role-note{font-size:12px;color:#94a3b8;margin-top:5px}
         .methods-grid{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
-        .m-chip{padding:7px 14px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;border:1.5px solid #e2e8f0;background:#f8fafc;color:#64748b;transition:all 0.15s;font-family:'Inter',sans-serif}
+        .m-chip{padding:7px 14px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;border:1.5px solid var(--border);background:var(--bg);color:var(--text-muted);transition:all 0.15s;font-family:'Inter',sans-serif}
         .m-chip.sel{background:#eff6ff;border-color:#3b82f6;color:#2563eb}
         .modal-actions{display:flex;gap:10px;margin-top:8px}
         .btn-save{flex:1;background:#1d4ed8;border:none;border-radius:10px;padding:13px;color:#fff;font-size:14px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;transition:background 0.2s}
         .btn-save:hover:not(:disabled){background:#1e40af}
         .btn-save:disabled{opacity:0.5;cursor:not-allowed}
-        .btn-cancel{flex:1;background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:10px;padding:13px;color:#475569;font-size:14px;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer}
+        .btn-cancel{flex:1;background:var(--bg);border:1.5px solid var(--border);border-radius:10px;padding:13px;color:var(--text-muted);font-size:14px;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer}
         .toast{position:fixed;bottom:24px;right:24px;padding:12px 20px;border-radius:12px;font-size:13px;font-weight:600;z-index:999;box-shadow:0 4px 20px rgba(0,0,0,0.15);animation:slidein 0.3s ease}
         .toast.success{background:#0f172a;color:#fff}
         .toast.error{background:#dc2626;color:#fff}
